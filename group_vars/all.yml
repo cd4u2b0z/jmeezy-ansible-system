@@ -64,7 +64,7 @@ dotfiles_map:
 # Services to enable (system-level)
 system_services:
   - NetworkManager
-  - bluetooth
+  # - bluetooth  # No bluetooth hardware
   - ufw
   # - coolercontrold  # Not installed
   # - cronie  # Optional

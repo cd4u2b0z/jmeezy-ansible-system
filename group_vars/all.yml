@@ -1,24 +1,12 @@
 ---
+# AUR helper to use (yay or paru)
+aur_helper: yay
+
 # CachyOS already has these services enabled/configured
-# Commenting out to avoid conflicts
-
+# Empty lists to skip service management
 system_services: []
-  # NetworkManager - already enabled by CachyOS
-  # bluetooth - no hardware
-  # ufw - already configured by CachyOS
-  # coolercontrold - not installed
-  # cronie - not needed
-
-# Timers to enable
 system_timers: []
-  # reflector.timer - CachyOS uses cachyos-rate-mirrors instead
 
-# User services to enable (after dotfiles)
-user_services:
-  - hypridle.service
-  # pipewire - already running via CachyOS
-  # wireplumber - already running via CachyOS
-
-# User timers to enable
+# User services (optional)
+user_services: []
 user_timers: []
-  # update-cache.timer - optional

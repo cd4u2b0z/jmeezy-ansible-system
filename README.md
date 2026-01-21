@@ -69,17 +69,148 @@ chezmoi init --apply https://github.com/cd4u2b0z/jmeezy-chezmoi.git
 
 ---
 
-## ⚠️ CachyOS Notes
+## 🔧 Troubleshooting
 
-CachyOS may have some packages pre-installed or use different package names. If you encounter conflicts:
+### ❌ "Fatal: destination path already exists and is not an empty directory"
 
-1. **NVIDIA driver conflicts**: CachyOS uses its own nvidia packages. If you get conflicts, run:
+You already have a folder at that location. Remove it first:
+
+```bash
+rm -rf ~/ansible-system
+git clone https://github.com/cd4u2b0z/jmeezy-ansible-system.git ~/ansible-system
+```
+
+Or clone to a different folder:
+
+```bash
+git clone https://github.com/cd4u2b0z/jmeezy-ansible-system.git ~/jmeezy-ansible-system
+cd ~/jmeezy-ansible-system
+```
+
+---
+
+### ❌ "No module named 'ansible_collections.community'" or "couldn't resolve module/action 'community.general.pacman'"
+
+You forgot to install the Ansible collection. Run:
+
+```bash
+ansible-galaxy collection install -r requirements.yml
+```
+
+Or manually:
+
+```bash
+ansible-galaxy collection install community.general
+```
+
+---
+
+### ❌ "BECOME password" prompt - what do I enter?
+
+Enter your **sudo password** - the same password you use to log into your system or when running `sudo` commands.
+
+To test if you know your sudo password:
+
+```bash
+sudo whoami
+```
+
+Whatever password works there is the one you use for Ansible.
+
+---
+
+### ❌ NVIDIA driver conflicts ("lib32-nvidia-utils and lib32-nvidia-580xx-utils are in conflict")
+
+CachyOS ships with its own NVIDIA driver packages that conflict with standard Arch packages. Remove the CachyOS versions first:
+
+```bash
+sudo pacman -Rdd nvidia-580xx-utils lib32-nvidia-580xx-utils
+```
+
+Then re-run the playbook:
+
+```bash
+ansible-playbook playbook.yml --ask-become-pass
+```
+
+---
+
+### ❌ "Failed to install package(s)" with package provider choices
+
+When pacman asks you to choose between multiple providers (like choosing between `cachyos-extra-v3` and `extra` repos), this can cause the automated install to fail.
+
+**Solution**: Just press Enter to accept defaults when running manually, or the playbook handles this with `--noconfirm`.
+
+If it still fails, try installing the problematic packages manually first:
+
+```bash
+sudo pacman -S <package-name>
+```
+
+Then re-run the playbook.
+
+---
+
+### ❌ Hyprland not starting or display issues
+
+1. Make sure NVIDIA drivers are properly installed:
    ```bash
-   sudo pacman -Rdd nvidia-580xx-utils lib32-nvidia-580xx-utils
+   nvidia-smi
    ```
-   Then re-run the playbook.
 
-2. **Package provider choices**: When pacman asks to choose a provider, just press Enter for defaults.
+2. Check that the monitor config matches your setup. Edit `~/.config/hypr/hyprland.conf`:
+   ```bash
+   # Should be set for 1080p:
+   monitor = ,1920x1080@60,auto,1
+   ```
+
+3. Ensure environment variables are set (in hyprland.conf):
+   ```
+   env = WLR_NO_HARDWARE_CURSORS,1
+   env = LIBVA_DRIVER_NAME,nvidia
+   env = __GLX_VENDOR_LIBRARY_NAME,nvidia
+   ```
+
+---
+
+### ❌ No sound / PipeWire issues
+
+```bash
+# Restart PipeWire
+systemctl --user restart pipewire pipewire-pulse wireplumber
+
+# Check status
+systemctl --user status pipewire
+```
+
+---
+
+### ❌ AUR packages failing
+
+Some AUR packages may need manual intervention. If the AUR role fails:
+
+1. Install `yay` or `paru` manually:
+   ```bash
+   sudo pacman -S --needed git base-devel
+   git clone https://aur.archlinux.org/yay.git
+   cd yay && makepkg -si
+   ```
+
+2. Then install AUR packages manually:
+   ```bash
+   yay -S <package-name>
+   ```
+
+---
+
+## 🔄 Re-running the Playbook
+
+It's safe to re-run the playbook multiple times. Ansible is idempotent - it will skip tasks that are already completed:
+
+```bash
+cd ~/ansible-system
+ansible-playbook playbook.yml --ask-become-pass
+```
 
 ---
 

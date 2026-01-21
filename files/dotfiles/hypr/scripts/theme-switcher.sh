@@ -2,7 +2,7 @@
 
 # ╔══════════════════════════════════════════════════════════════════╗
 # ║  🎨 THEME SWITCHER - System-wide theming with animations         ║
-# ║  Powered by wallust + swww for craig@grim-reefer                 ║
+# ║  Powered by wallust + swww for jmeezy@cachypirate                 ║
 # ╚══════════════════════════════════════════════════════════════════╝
 
 # Use -u (undefined vars) and pipefail but NOT -e (exit on error)

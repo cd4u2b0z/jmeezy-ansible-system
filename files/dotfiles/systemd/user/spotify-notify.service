@@ -4,7 +4,7 @@ After=graphical-session.target
 
 [Service]
 Type=simple
-ExecStart=/bin/bash -c 'playerctl -p spotify -F metadata --format "{{artist}} - {{title}}" | while read line; do /home/craig/.local/bin/spotify-notify; done'
+ExecStart=/bin/bash -c 'playerctl -p spotify -F metadata --format "{{artist}} - {{title}}" | while read line; do /home/jmeezy/.local/bin/spotify-notify; done'
 Restart=always
 RestartSec=5
 

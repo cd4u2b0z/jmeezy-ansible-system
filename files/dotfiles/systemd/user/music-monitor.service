@@ -5,8 +5,8 @@ Wants=mako.service
 
 [Service]
 Type=simple
-ExecStart=/home/craig/.config/waybar/scripts/music-monitor.sh start
-ExecStop=/home/craig/.config/waybar/scripts/music-monitor.sh stop
+ExecStart=/home/jmeezy/.config/waybar/scripts/music-monitor.sh start
+ExecStop=/home/jmeezy/.config/waybar/scripts/music-monitor.sh stop
 Restart=on-failure
 RestartSec=10
 Environment=DISPLAY=:0

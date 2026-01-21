@@ -9,7 +9,7 @@
 # │     Either set your username, or use: ansible_user_id               │
 # │     Example: user_name: "{{ ansible_user_id }}"                     │
 # └─────────────────────────────────────────────────────────────────────┘
-user_name: craig
+user_name: jmeezy
 user_home: "/home/{{ user_name }}"
 
 # AUR helper (paru or yay)

@@ -999,7 +999,7 @@ tmux-fix-hostname() {
 alias mesen2="cd ~/Emulators/Mesen2 && DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1 ./Mesen"
 
 # MelonDS Emulator Alias
-alias melonds="/home/craig/Emulators/MelonDS/launch-melonds.sh"
+alias melonds="/home/jmeezy/Emulators/MelonDS/launch-melonds.sh"
 
 # Weather animations (asciimatics-weather-toys)
 alias live_weather='cd ~/asciimatics-weather-toys && source .venv/bin/activate && python weather_live.py'

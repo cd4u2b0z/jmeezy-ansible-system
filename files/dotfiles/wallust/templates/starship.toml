@@ -3,7 +3,7 @@
 
 format = """
 [░▒▓]({{color4}})\
-[ craig@ultraviolet-pirate ](bg:{{color4}} fg:{{background}})\
+[ jmeezy@cachypirate ](bg:{{color4}} fg:{{background}})\
 [](bg:{{color6}} fg:{{color4}})\
 $directory\
 [](fg:{{color6}} bg:{{color0}})\

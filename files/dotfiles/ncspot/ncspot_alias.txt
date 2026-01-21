@@ -1,2 +1,2 @@
 # Add this to your ~/.zshrc or create an alias
-alias ncspot='/home/craig/.config/ncspot/ncspot_safe.sh'
+alias ncspot='/home/jmeezy/.config/ncspot/ncspot_safe.sh'

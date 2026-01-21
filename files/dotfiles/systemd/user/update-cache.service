@@ -5,7 +5,7 @@ After=network-online.target
 
 [Service]
 Type=oneshot
-ExecStart=/home/craig/.config/waybar/scripts/refresh-update-cache.sh
+ExecStart=/home/jmeezy/.config/waybar/scripts/refresh-update-cache.sh
 
 [Install]
 WantedBy=default.target

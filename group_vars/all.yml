@@ -66,8 +66,8 @@ system_services:
   - NetworkManager
   - bluetooth
   - ufw
-  - coolercontrold
-  - cronie
+  # - coolercontrold  # Not installed
+  # - cronie  # Optional
 
 # Timers to enable
 system_timers:

@@ -73,9 +73,7 @@ lib32-libxslt
 lib32-mangohud
 lib32-mesa-demos
 lib32-mpg123
-lib32-nvidia-utils
 lib32-openal
-lib32-opencl-nvidia
 lib32-pipewire
 lib32-v4l-utils
 libreoffice-fresh
@@ -102,12 +100,8 @@ noto-fonts
 noto-fonts-cjk
 noto-fonts-emoji
 ntfs-3g
-nvidia
-nvidia-settings
-nvidia-utils
 nwg-displays
 nwg-look
-opencl-nvidia
 pacman-contrib
 pamixer
 papirus-icon-theme

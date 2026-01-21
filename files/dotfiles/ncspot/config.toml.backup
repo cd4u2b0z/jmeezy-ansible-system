@@ -1,0 +1,56 @@
+# Minimal ncspot config - fixes crashes after audio updates
+[audio]
+backend = "pulseaudio"
+
+[theme]
+# Nord Theme for ncspot (simplified)
+background = "#2e3440"
+primary = "#d8dee9"
+secondary = "#81a1c1"
+title = "#88c0d0"
+playing = "#a3be8c"
+playing_selected = "#8fbcbb"
+playing_bg = "#3b4252"
+highlight = "#5e81ac"
+highlight_bg = "#434c5e"
+error = "#bf616a"
+error_bg = "#434c5e"
+statusbar = "#2e3440"
+statusbar_progress = "#ebcb8b"
+statusbar_bg = "#3b4252"
+cmdline = "#d8dee9"
+cmdline_bg = "#2e3440"
+search_match = "#ebcb8b"
+
+[behavior]
+# Keep your existing behavior settings
+seek_backward = 10000
+seek_forward = 10000
+volup = 1
+voldown = 1
+
+[keybindings]
+# Vim-style navigation
+"q" = "quit"
+"?" = "help"
+" " = "playpause"
+"s" = "stop"
+"p" = "previous"
+"n" = "next"
+">" = "seek +10000"
+"<" = "seek -10000"
+"+" = "volup"
+"-" = "voldown"
+"r" = "repeat"
+"z" = "shuffle"
+"Shift+z" = "shuffle_context"
+"u" = "update"
+"o" = "library"
+"/" = "search"
+"Enter" = "play"
+"d" = "delete"
+"c" = "clear"
+"x" = "share"
+"a" = "save"
+"f" = "follow"
+"Ctrl+r" = "reload"

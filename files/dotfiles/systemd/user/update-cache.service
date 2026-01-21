@@ -1,0 +1,11 @@
+[Unit]
+Description=Refresh pacman/AUR update cache for Waybar
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/home/craig/.config/waybar/scripts/refresh-update-cache.sh
+
+[Install]
+WantedBy=default.target

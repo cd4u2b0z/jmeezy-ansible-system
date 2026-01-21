@@ -1,0 +1,21 @@
+# 🎵 Wallust-generated ncspot theme
+# Auto-generated - do not edit manually
+
+[theme]
+background = "{{background}}"
+primary = "{{foreground}}"
+secondary = "{{color4}}"
+title = "{{color6}}"
+playing = "{{color2}}"
+playing_selected = "{{color14}}"
+playing_bg = "{{color0}}"
+highlight = "{{color4}}"
+highlight_bg = "{{color8}}"
+error = "{{color1}}"
+error_bg = "{{background}}"
+statusbar = "{{color0}}"
+statusbar_progress = "{{color6}}"
+statusbar_bg = "{{background}}"
+cmdline = "{{foreground}}"
+cmdline_bg = "{{background}}"
+search_match = "{{color3}}"

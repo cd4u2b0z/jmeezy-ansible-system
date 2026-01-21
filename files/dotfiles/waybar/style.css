@@ -1,0 +1,390 @@
+/* DYNAMIC THEME - Wallust Powered */
+/* Colors imported from wallust-colors.css */
+@import "wallust-colors.css";
+
+/* Shield animations */
+@keyframes pulse-pending {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+@keyframes pulse-urgent {
+  0% { opacity: 1; }
+  50% { opacity: 0.8; }
+  100% { opacity: 1; }
+}
+
+@keyframes pulse-checking {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+* {
+  border: none;
+  border-radius: 12px;
+  font-family: "Inter", "JetBrainsMono Nerd Font", system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  min-height: 0;
+  color: @foreground;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+window#waybar {
+  background: alpha(@background, 0.6);
+  border: none;
+  border-radius: 12px;
+  margin: 0;
+  padding: 0;
+  box-shadow: none;
+}
+
+window#waybar:hover {
+  background: alpha(@background, 0.9);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.5),
+    0 0 0 1px alpha(@accent2, 0.15),
+    inset 0 1px 0 alpha(@color15, 0.15);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   TOOLTIPS - Theme Aware
+   ═══════════════════════════════════════════════════════════════════ */
+
+tooltip {
+  background: alpha(@background, 0.80);
+  border: 2px solid @accent2;
+  border-radius: 12px;
+}
+
+tooltip * {
+  color: @color15;
+}
+
+tooltip label {
+  color: @color15;
+  font-family: "Inter", "JetBrainsMono Nerd Font", sans-serif;
+  padding: 8px 12px;
+}
+
+tooltip box {
+}
+
+#clock tooltip label {
+  color: @foreground;
+  font-size: 11px;
+  font-family: "Inter", "JetBrainsMono Nerd Font", monospace;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   UNIVERSAL MODULE HOVER
+   ═══════════════════════════════════════════════════════════════════ */
+.modules-left > widget > *:hover,
+.modules-center > widget > *:hover,
+.modules-right > widget > *:hover {
+  background: alpha(@accent2, 0.25);
+  border-color: alpha(@accent2, 0.6);
+  color: @color15;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   APP TRAY
+   ═══════════════════════════════════════════════════════════════════ */
+#custom-app-tray {
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  padding: 6px 12px;
+  margin: 0;
+  color: @foreground;
+  font-weight: 600;
+  font-size: 14px;
+  font-family: "JetBrainsMono Nerd Font", "Inter", sans-serif;
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+#custom-app-tray:hover {
+  background: alpha(@accent2, 0.2);
+  color: @color15;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px alpha(@accent2, 0.2);
+}
+
+#custom-app-tray.empty {
+  color: @color8;
+  opacity: 0.6;
+}
+
+#custom-app-tray.empty:hover {
+  color: @accent2;
+  opacity: 1;
+}
+
+#custom-app-tray.error {
+  color: @error;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   WORKSPACES
+   ═══════════════════════════════════════════════════════════════════ */
+#workspaces {
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  padding: 4px 8px;
+  margin: 0;
+}
+
+#workspaces button {
+  padding: 6px 10px;
+  margin: 0 2px;
+  color: @color8;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  font-family: "Inter", "JetBrainsMono Nerd Font", sans-serif;
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+#workspaces button:hover {
+  background: alpha(@accent, 0.2);
+  color: @accent2;
+  border-radius: 8px;
+}
+
+#workspaces button.active {
+  background: alpha(@accent2, 0.6);
+  color: @background;
+  border-radius: 8px;
+  font-weight: 700;
+  box-shadow: 0 2px 8px alpha(@accent2, 0.3);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   CLOCK & WEATHER (Center)
+   ═══════════════════════════════════════════════════════════════════ */
+#clock {
+  background: transparent;
+  color: @color15;
+  font-weight: 700;
+  font-size: 14px;
+  font-family: "Inter", sans-serif;
+  letter-spacing: 0.3px;
+  padding: 6px 12px;
+  border-radius: 12px;
+  text-shadow: none;
+}
+
+#clock:hover {
+  background: alpha(@color15, 0.1);
+  color: @color15;
+  transition: all 0.2s ease-in-out;
+}
+
+#custom-weather {
+  background: transparent;
+  color: @color15;
+  font-weight: 700;
+  font-size: 14px;
+  font-family: "Inter", "JetBrainsMono Nerd Font", sans-serif;
+  letter-spacing: 0.3px;
+  padding: 6px 24px;
+  border-radius: 12px;
+  text-shadow: none;
+}
+
+#custom-weather:hover {
+  background: alpha(@color15, 0.1);
+  color: @color15;
+  transition: all 0.2s ease-in-out;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SYSTEM TRAY
+   ═══════════════════════════════════════════════════════════════════ */
+#tray {
+  background: alpha(@surface, 0.5);
+  border: 1px solid alpha(@overlay, 0.3);
+  padding: 4px 8px;
+}
+
+#tray:hover {
+  background: alpha(@overlay, 0.7);
+  border-color: alpha(@accent, 0.4);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   RIGHT-SIDE MODULES
+   ═══════════════════════════════════════════════════════════════════ */
+#custom-updates {
+  padding: 8px 14px;
+  margin: 0;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-family: "JetBrainsMono Nerd Font", "Inter", sans-serif;
+}
+
+#custom-system-stats {
+  padding: 8px 14px;
+  font-family: "Inter", "JetBrainsMono Nerd Font", sans-serif;
+}
+
+#bluetooth {
+  padding: 8px 14px;
+  font-family: "JetBrainsMono Nerd Font", "Inter", sans-serif;
+}
+
+#network {
+  padding: 8px 14px;
+  font-family: "JetBrainsMono Nerd Font", "Inter", sans-serif;
+}
+
+#pulseaudio {
+  padding: 8px 14px;
+  font-size: 14px;
+  font-family: "Inter", "JetBrainsMono Nerd Font", sans-serif;
+}
+
+#pulseaudio.muted {
+  color: @error;
+}
+
+/* Seamless modules - transparent background */
+#custom-system-stats,
+#bluetooth,
+#network,
+#pulseaudio,
+#custom-weather,
+#clock {
+  background: transparent;
+  color: @color15;
+  border: none;
+  border-radius: 12px;
+}
+
+#custom-system-stats:hover,
+#bluetooth:hover,
+#network:hover,
+#pulseaudio:hover,
+#custom-weather:hover,
+#clock:hover,
+#custom-updates:hover {
+  background: alpha(@color15, 0.1);
+  color: @color15;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   UPDATES SHIELD STATES
+   ═══════════════════════════════════════════════════════════════════ */
+#custom-updates.updated {
+  color: @color15;
+}
+
+#custom-updates.pending {
+  color: @color15;
+  animation: pulse-pending 2s ease-in-out infinite;
+}
+
+#custom-updates.urgent {
+  color: @color15;
+  animation: pulse-urgent 1s ease-in-out infinite;
+}
+
+#custom-updates.checking {
+  color: @color15;
+  animation: pulse-checking 1.5s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   CALENDAR POPUP - Theme Aware
+   ═══════════════════════════════════════════════════════════════════ */
+calendar {
+  background-color: @background;
+  border: 2px solid @accent2;
+  border-radius: 12px;
+  padding: 12px;
+  color: @foreground;
+  font-family: "Inter", "JetBrainsMono Nerd Font", sans-serif;
+}
+
+calendar:selected {
+  background-color: @accent1;
+  color: @background;
+  border-radius: 6px;
+}
+
+calendar.header {
+  color: @accent1;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+calendar.button {
+  color: @color8;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+calendar.button:hover {
+  background-color: @accent1;
+  color: @background;
+}
+
+calendar.highlight {
+  color: @accent2;
+  font-weight: 600;
+}
+
+calendar:indeterminate {
+  color: @color8;
+}
+
+/* Force spacing on day cells via the view */
+calendar > grid > label {
+  min-width: 28px;
+  min-height: 28px;
+  margin: 2px;
+  padding: 4px;
+  border-radius: 6px;
+}
+
+calendar > grid > label:hover {
+  background-color: alpha(@accent1, 0.3);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   MUSIC PLAYER - Dynamic Spotify/ncspot
+   ═══════════════════════════════════════════════════════════════════ */
+#custom-music {
+    color: @foreground;
+    padding: 0 10px;
+    margin: 4px 2px;
+    font-size: 11px;
+    transition: all 0.1s ease;
+}
+
+#custom-music.playing {
+    color: @color2;  /* Green when playing */
+}
+
+#custom-music.paused {
+    color: @color8;  /* Grey when paused */
+    font-style: italic;
+}
+
+#custom-music:hover {
+    color: @color1;  /* Red on hover */
+}
+
+#custom-music.hidden {
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+    font-size: 0;
+}

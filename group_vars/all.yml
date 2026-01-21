@@ -1,0 +1,85 @@
+---
+# ═══════════════════════════════════════════════════════════════════════
+# Global variables for system configuration
+# Philosophy: Chezmoi = source of truth, Ansible = provisioner + fallback
+# ═══════════════════════════════════════════════════════════════════════
+
+# ┌─────────────────────────────────────────────────────────────────────┐
+# │ ⚠️  IMPORTANT: Change this when forking!                            │
+# │     Either set your username, or use: ansible_user_id               │
+# │     Example: user_name: "{{ ansible_user_id }}"                     │
+# └─────────────────────────────────────────────────────────────────────┘
+user_name: craig
+user_home: "/home/{{ user_name }}"
+
+# AUR helper (paru or yay)
+aur_helper: paru
+
+# Chezmoi dotfiles repo (PRIMARY dotfile management)
+chezmoi_repo: "https://github.com/cd4u2b0z/dotfiles.git"
+
+# Dotfiles to symlink (FALLBACK if chezmoi unavailable)
+# These mirror what chezmoi manages, for disaster recovery
+dotfiles_map:
+  # Core Hyprland ecosystem
+  - { src: "hypr", dest: ".config/hypr" }
+  - { src: "waybar", dest: ".config/waybar" }
+  - { src: "mako", dest: ".config/mako" }
+  - { src: "fuzzel", dest: ".config/fuzzel" }
+  
+  # Terminal & shell
+  - { src: "kitty", dest: ".config/kitty" }
+  - { src: "zshrc", dest: ".zshrc" }
+  - { src: "starship.toml", dest: ".config/starship.toml" }
+  - { src: "tmux", dest: ".config/tmux" }
+  
+  # Editor
+  - { src: "nvim", dest: ".config/nvim" }
+  
+  # Theming
+  - { src: "wallust", dest: ".config/wallust" }
+  - { src: "gtk-3.0", dest: ".config/gtk-3.0" }
+  - { src: "gtk-4.0", dest: ".config/gtk-4.0" }
+  
+  # Media & audio
+  - { src: "ncmpcpp", dest: ".config/ncmpcpp" }
+  - { src: "ncspot", dest: ".config/ncspot" }
+  - { src: "mpd", dest: ".config/mpd" }
+  - { src: "cava", dest: ".config/cava" }
+  
+  # Gaming
+  - { src: "MangoHud", dest: ".config/MangoHud" }
+  
+  # Utilities
+  - { src: "fontconfig", dest: ".config/fontconfig" }
+  - { src: "nwg-displays", dest: ".config/nwg-displays" }
+  - { src: "Thunar", dest: ".config/Thunar" }
+  
+  # Systemd user services
+  - { src: "systemd", dest: ".config/systemd" }
+  
+  # Local bin scripts
+  - { src: "local-bin", dest: ".local/bin" }
+
+# Services to enable (system-level)
+system_services:
+  - NetworkManager
+  - bluetooth
+  - ufw
+  - coolercontrold
+  - cronie
+
+# Timers to enable
+system_timers:
+  - reflector.timer
+
+# User services to enable (after dotfiles)
+user_services:
+  - hypridle.service
+  - pipewire.socket
+  - pipewire-pulse.socket
+  - wireplumber.service
+
+# User timers to enable
+user_timers:
+  - update-cache.timer

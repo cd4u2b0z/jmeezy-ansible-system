@@ -1,0 +1,27 @@
+# Ansible
+*.retry
+
+# Editor
+*.swp
+*.swo
+*~
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets (if any)
+secrets.yml
+vault.yml
+*.vault
+
+# Temp
+/tmp/
+
+# Inventory may contain hostnames
+inventory.yml
+
+# Local testing
+test/
+*.test.yml

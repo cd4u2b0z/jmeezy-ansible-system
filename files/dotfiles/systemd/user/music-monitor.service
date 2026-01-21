@@ -1,0 +1,15 @@
+[Unit]
+Description=Music Monitor Service
+After=graphical-session.target
+Wants=mako.service
+
+[Service]
+Type=simple
+ExecStart=/home/craig/.config/waybar/scripts/music-monitor.sh start
+ExecStop=/home/craig/.config/waybar/scripts/music-monitor.sh stop
+Restart=on-failure
+RestartSec=10
+Environment=DISPLAY=:0
+
+[Install]
+WantedBy=default.target

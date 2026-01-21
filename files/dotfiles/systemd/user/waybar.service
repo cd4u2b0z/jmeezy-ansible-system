@@ -1,0 +1,17 @@
+[Unit]
+Description=Waybar Nord Theme
+Documentation=https://github.com/Alexays/Waybar/wiki
+PartOf=hyprland-session.target
+After=hyprland-session.target
+Wants=hyprland-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/waybar -c %h/.config/waybar/config -s %h/.config/waybar/style.css
+Restart=always
+RestartSec=3
+KillMode=mixed
+Environment=DISPLAY=:0
+
+[Install]
+WantedBy=hyprland-session.target

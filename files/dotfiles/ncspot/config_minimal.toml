@@ -1,0 +1,59 @@
+# ncspot configuration - Fixed for ANSI escape code issues
+[audio]
+# Use pulseaudio backend (works with PipeWire PulseAudio compat)
+# NEVER use "pipe" backend - it causes ANSI gibberish in terminal
+backend = "pulseaudio"
+sample_rate = 44100
+bitrate = 320
+
+[theme]
+# Conservative theme to reduce terminal rendering issues
+background = "black"
+primary = "white" 
+secondary = "light gray"
+title = "white"
+playing = "white"
+playing_selected = "white"
+playing_bg = "black"
+highlight = "white"
+highlight_bg = "black"
+error = "red"
+error_bg = "black"
+statusbar = "black"
+statusbar_progress = "white"
+statusbar_bg = "black"
+cmdline = "white"
+cmdline_bg = "black"
+search_match = "white"
+
+[keybindings]
+# Safe keybindings that won't interfere with terminal
+"Ctrl+c" = "quit"
+"q" = "quit"
+"?" = "help"
+" " = "playpause"
+">" = "next"
+"<" = "previous"
+"s" = "shuffle"
+"r" = "repeat"
+"o" = "open"
+"/" = "search"
+"n" = "search_next"
+"N" = "search_previous"
+"+" = "volup"
+"-" = "voldown"
+"=" = "volup"
+
+[behavior]
+# Settings to reduce ANSI escape code issues
+use_nerdfont = false  # Disable to prevent unicode rendering issues
+flip_status_indicators = false
+backend_reload_interval = 5
+audio_cache = true
+audio_cache_size = 1000
+
+# Terminal compatibility fixes
+[display]
+# Force simpler display mode to avoid ANSI conflicts
+use_color = true
+force_color = false

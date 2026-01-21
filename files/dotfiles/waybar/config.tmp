@@ -1,0 +1,276 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 48,
+  "exclusive": true,
+  "passthrough": false,
+  "gtk-layer-shell": true,
+  "margin": "0",
+
+  "modules-left": [
+    "custom/arch",
+    "hyprland/workspaces",
+    "hyprland/window"
+  ],
+
+  "modules-center": [
+    "clock"
+  ],
+
+  "modules-right": [
+    "tray",
+    "cpu",
+    "memory",
+    "temperature",
+    "disk",
+    "bluetooth",
+    "network",
+    "pulseaudio"
+  ],
+
+  "hyprland/workspaces": {
+    "disable-scroll": true,
+    "all-outputs": true,
+    "on-click": "activate",
+    "persistent_workspaces": {
+      "1": [],
+      "2": [],
+      "3": []
+    }
+  },
+
+  "hyprland/window": {
+    "format": "  {}",
+    "max-length": 40,
+    "separate-outputs": true,
+    "rewrite": {
+      "(.*) — Mozilla Firefox": "$1",
+      "(.*) — LibreWolf": "$1",
+      "(.*) - Brave": "$1",
+      "(.*) - Discord": "Discord",
+      "(.*) - Steam": "Steam",
+      "(.*) - Visual Studio Code": "$1",
+      "Spotify Premium": "Spotify",
+      "OBS (.*)": "OBS Studio"
+    }
+  },
+
+  "custom/arch": {
+    "format": " ",
+    "tooltip": false,
+    "on-click": "rofi -show drun"
+  },
+
+  "custom/separator": {
+    "format": "│",
+    "tooltip": false
+  },
+
+  "custom/separator-dot": {
+    "format": "·",
+    "tooltip": false
+  },
+
+  "clock": {
+    "format": "◐ {:%H:%M:%S}",
+    "format-alt": "◑ {:%Y-%m-%d}",
+    "tooltip-format": "<tt><small>{calendar}</small></tt>",
+    "calendar": {
+      "mode": "month",
+      "mode-mon-col": 3,
+      "weeks-pos": "right",
+      "on-scroll": 1,
+      "format": {
+        "months": "<span color='#88c0d0'><b>{}</b></span>",
+        "days": "<span color='#eceff4'>{}</span>",
+        "weeks": "<span color='#5e81ac'><b>W{}</b></span>",
+        "weekdays": "<span color='#81a1c1'><b>{}</b></span>",
+        "today": "<span color='#bf616a'><b><u>{}</u></b></span>"
+      }
+    },
+    "actions": {
+      "on-click-right": "mode",
+      "on-scroll-up": "shift_up",
+      "on-scroll-down": "shift_down"
+    },
+    "on-click": "gnome-calendar || gnome-clocks || date"
+  },
+
+  "clock#date": {
+    "format": "󰸗 {:%a, %b %d}",
+    "tooltip-format": "{:%Y-%m-%d | %A}"
+  },
+
+  "custom/weather": {
+    "exec": "python3 ~/.config/waybar/scripts/weather.py",
+    "interval": 600,
+    "return-type": "json",
+    "format": "{}",
+    "tooltip": true,
+    "on-click": "xdg-open https://weather.com"
+  },
+
+  "tray": {
+    "icon-size": 18,
+    "spacing": 8,
+    "tooltip": true,
+    "show-passive-items": true
+  },
+
+  "custom/updates": {
+    "exec": "~/.config/waybar/scripts/update-check.sh",
+    "interval": 3600,
+    "return-type": "json",
+    "format": "{icon} {alt}",
+    "format-icons": {
+      "has-updates": "󰏗",
+      "updated": "󰏖"
+    },
+    "on-click": "kitty -e paru -Syu",
+    "signal": 8
+  },
+
+  "cpu": {
+    "interval": 2,
+    "format": "◉ {usage}%",
+    "format-alt": "◈ {avg_frequency}GHz",
+    "max-length": 15,
+    "tooltip": true,
+    "tooltip-format": "CPU: {usage}%\nFreq: {avg_frequency}GHz\nLoad: {load}",
+    "on-click": "kitty -e btop",
+    "on-click-right": "kitty -e top"
+  },
+
+  "memory": {
+    "interval": 3,
+    "format": "◎ {}%",
+    "format-alt": "◍ {used:0.1f}G",
+    "max-length": 15,
+    "tooltip": true,
+    "tooltip-format": "RAM: {used:0.1f}GB / {total:0.1f}GB ({percentage}%)\nSwap: {swapUsed:0.1f}GB / {swapTotal:0.1f}GB",
+    "on-click": "kitty -e btop",
+    "on-click-right": "kitty -e htop"
+  },
+
+  "temperature": {
+    "thermal-zone": 0,
+    "hwmon-path": "/sys/class/hwmon/hwmon2/temp1_input",
+    "critical-threshold": 80,
+    "format": "◈ {temperatureC}°C",
+    "format-critical": "◆ {temperatureC}°C",
+    "tooltip-format": "CPU Temp: {temperatureC}°C",
+    "on-click": "kitty -e sensors",
+    "on-click-right": "kitty -e watch -n1 sensors"
+  },
+
+  "custom/gpu-temp": {
+    "exec": "~/.config/waybar/scripts/gpu-temp.sh",
+    "interval": 2,
+    "return-type": "json",
+    "format": "{icon} {alt}°C",
+    "format-icons": ["", "", "", "", ""],
+    "tooltip": true,
+    "on-click": "kitty -e nvtop"
+  },
+
+  "disk": {
+    "interval": 30,
+    "format": "◐ {percentage_used}%",
+    "format-alt": "📁 {used}",
+    "path": "/",
+    "tooltip": true,
+    "tooltip-format": "Disk: {used} / {total} ({percentage_used}%)\nFree: {free}",
+    "on-click": "nautilus / || thunar / || pcmanfm /",
+    "on-click-right": "kitty -e ncdu /"
+  },
+
+  "network": {
+    "format-ethernet": "◉",
+    "format-wifi": "◎ {signalStrength}%", 
+    "format-linked": "◍",
+    "format-disconnected": "○",
+    "format-alt": " {ifname}",
+    "tooltip-format": " {ifname}\nIP: {ipaddr}/{cidr}",
+    "tooltip-format-ethernet": " {ifname}\nIP: {ipaddr}/{cidr}\n↓ {bandwidthDownBytes} ↑ {bandwidthUpBytes}",
+    "tooltip-format-wifi": " {essid} ({signalStrength}%)\nIP: {ipaddr}/{cidr}\n↓ {bandwidthDownBytes} ↑ {bandwidthUpBytes}",
+    "interval": 2,
+    "on-click": "kitty -e nmtui",
+    "on-click-right": "nmcli device wifi rescan"
+  },
+
+  "bluetooth": {
+    "format": "●",
+    "format-disabled": "○",
+    "format-off": "○",
+    "format-on": "●",
+    "format-connected": "◉",
+    "format-connected-battery": "◉ {device_battery_percentage}%",
+    "tooltip-format": "{controller_alias}\t{controller_address}",
+    "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+    "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%",
+    "on-click": "blueman-manager || bluetooth-manager",
+    "on-click-right": "rfkill toggle bluetooth"
+  },
+
+  "pulseaudio": {
+    "format": "♪ {volume}%",
+    "format-muted": "♫",
+    "format-bluetooth": "♪ {volume}%",
+    "format-bluetooth-muted": "♫",
+    "format-icons": {
+      "headphone": "♪",
+      "hands-free": "♫", 
+      "headset": "♪",
+      "phone": "♩",
+      "portable": "♪",
+      "car": "♫",
+      "default": ["♪", "♪", "♪"]
+    },
+    "on-click": "pavucontrol || pulseaudio-control-center",
+    "on-click-middle": "pamixer -t",
+    "on-click-right": "pamixer -t",
+    "on-scroll-up": "pamixer -i 2",
+    "on-scroll-down": "pamixer -d 2",
+    "smooth-scrolling-threshold": 1,
+    "tooltip-format": "{desc}\nVolume: {volume}%"
+  },
+
+  "custom/mouse-battery": {
+    "exec": "~/.config/waybar/scripts/mouse-battery.sh",
+    "interval": 120,
+    "return-type": "json",
+    "format": "{icon} {alt}%",
+    "format-icons": {
+      "critical": "󰂃",
+      "low": "󰁾",
+      "medium": "󰁿",
+      "high": "󰂁",
+      "full": "󰂄"
+    },
+    "tooltip": true
+  },
+
+  "custom/notification": {
+    "tooltip": false,
+    "format": "{icon}",
+    "format-icons": {
+      "notification": "󱅫",
+      "none": "󰂚",
+      "dnd-notification": "󱏧",
+      "dnd-none": "󰂛"
+    },
+    "return-type": "json",
+    "exec-if": "which swaync-client",
+    "exec": "swaync-client -swb",
+    "on-click": "swaync-client -t -sw",
+    "on-click-right": "swaync-client -d -sw",
+    "escape": true
+  },
+
+  "custom/power": {
+    "format": "⏻",
+    "tooltip": false,
+    "on-click": "~/.config/waybar/scripts/power-menu.sh"
+  }
+}

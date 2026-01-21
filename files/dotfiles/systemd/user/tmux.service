@@ -1,0 +1,14 @@
+[Unit]
+Description=Terminal multiplexer
+Documentation=man:tmux(1)
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/tmux new-session -d -s default
+ExecStop=/usr/bin/tmux kill-server
+KillMode=none
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,35 @@
+---
+# Arch Linux + Hyprland System Playbook
+# Run with: ansible-playbook -K playbook.yml
+
+- name: Configure Arch Linux System
+  hosts: localhost
+  connection: local
+  become: false
+
+  vars_files:
+    - group_vars/all.yml
+
+  pre_tasks:
+    - name: Update pacman cache
+      become: true
+      community.general.pacman:
+        update_cache: true
+
+  roles:
+    - packages
+    - aur
+    - services
+    - dotfiles
+
+  post_tasks:
+    - name: System configuration complete
+      debug:
+        msg: |
+          ✅ System rebuild complete!
+          
+          Manual steps remaining:
+          - Restore /home from backup
+          - Import SSH/GPG keys
+          - Log into applications
+          - Run 'hyprctl reload' if in Hyprland

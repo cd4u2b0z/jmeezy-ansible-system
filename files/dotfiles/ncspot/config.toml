@@ -1,0 +1,58 @@
+# 🎵 ncspot Configuration
+# Theme is loaded from wallust-generated file
+
+# Include wallust theme (dynamic colors)
+# Note: ncspot doesn't support includes, so we source theme separately
+# The theme section below will be overwritten by wallust
+
+[theme]
+background = "#2D353B"
+primary = "#D3C6AA"
+secondary = "#7FBBB3"
+title = "#83C092"
+playing = "#A7C080"
+playing_selected = "#35A77C"
+playing_bg = "#343F44"
+highlight = "#7FBBB3"
+highlight_bg = "#5C6A72"
+error = "#E67E80"
+error_bg = "#2D353B"
+statusbar = "#343F44"
+statusbar_progress = "#83C092"
+statusbar_bg = "#2D353B"
+cmdline = "#D3C6AA"
+cmdline_bg = "#2D353B"
+[audio]
+backend = "pulseaudio"
+
+[keybindings]
+# Vi-style keybindings
+"q" = "quit"
+"Ctrl+c" = "quit"
+" " = "playpause"
+">" = "next"
+"<" = "previous"
+"s" = "shuffle"
+"r" = "repeat"
+"o" = "open"
+"/" = "search"
+"n" = "search_next"
+"N" = "search_previous"
+"+" = "volup"
+"-" = "voldown"
+"=" = "volup"
+"j" = "down"
+"k" = "up"
+"h" = "left"
+"l" = "right"
+"g" = "top"
+"G" = "bottom"
+"?" = "help"
+
+[behavior]
+# Stable behavior settings
+use_nerdfont = true
+flip_status_indicators = false
+backend_reload_interval = 5
+audio_cache = true
+audio_cache_size = 1000

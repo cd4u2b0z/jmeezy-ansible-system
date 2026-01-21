@@ -1,0 +1,16 @@
+# Wallust-generated Cava colors
+# Aurora Borealis gradient effect
+
+[color]
+gradient = 1
+gradient_count = 8
+
+# Bottom to top: Deep blue → Frost cyan → Green → Aurora peaks
+gradient_color_1 = '{{color4}}'
+gradient_color_2 = '{{color12}}'
+gradient_color_3 = '{{color6}}'
+gradient_color_4 = '{{color14}}'
+gradient_color_5 = '{{color2}}'
+gradient_color_6 = '{{color10}}'
+gradient_color_7 = '{{color3}}'
+gradient_color_8 = '{{color5}}'

@@ -1,0 +1,86 @@
+# 🎵 Nord Theme ncspot Configuration
+# Generated: October 4, 2025
+
+[audio]
+backend = "pulseaudio"
+sample_rate = 48000
+bitrate = 320
+# Maximum quality audio settings
+volume_normalisation = false
+normalisation_pregain = 0.0
+# Use very high quality (Spotify Premium setting)
+audio_quality = "very_high"
+# Additional quality enhancements
+gapless = true
+dithering = true
+
+[theme]
+# Nord color scheme for ncspot
+background = "#2e3440"
+primary = "#e5e9f0"
+secondary = "#81a1c1"
+title = "#88c0d0"
+playing = "#a3be8c"
+playing_selected = "#8fbcbb"
+playing_bg = "#3b4252"
+highlight = "#5e81ac"
+highlight_bg = "#434c5e"
+error = "#bf616a"
+error_bg = "#2e3440"
+statusbar = "#3b4252"
+statusbar_progress = "#88c0d0"
+statusbar_bg = "#2e3440"
+cmdline = "#e5e9f0"
+cmdline_bg = "#2e3440"
+search_match = "#ebcb8b"
+
+[keybindings]
+# Vi-style keybindings
+"q" = "quit"
+"Ctrl+c" = "quit"
+" " = "playpause"
+">" = "seek +10000"
+"<" = "seek -10000"
+"n" = "next"
+"p" = "previous"
+"s" = "stop"
+"r" = "repeat"
+"z" = "shuffle"
+"Shift+z" = "shuffle_context"
+"o" = "open"
+"/" = "search"
+"N" = "search_previous"
+"+" = "volup"
+"-" = "voldown"
+"=" = "volup"
+"j" = "down"
+"k" = "up"
+"h" = "left"
+"l" = "right"
+"g" = "top"
+"G" = "bottom"
+"?" = "help"
+"Ctrl+n" = "exec ~/.config/waybar/scripts/ncspot-notifications.sh notify"
+
+# Additional useful keybindings (restored from your old config)
+"f" = "follow"
+"u" = "update"
+"c" = "clear"
+"d" = "delete"
+"a" = "save"
+"x" = "share"
+"Ctrl+r" = "reload"
+"Enter" = "play"
+"F1" = "help"
+
+[behavior]
+# Stable behavior settings
+use_nerdfont = true
+flip_status_indicators = false
+backend_reload_interval = 5
+audio_cache = true
+audio_cache_size = 1000
+
+[mpris]
+# Enable MPRIS for notifications and media keys
+enabled = true

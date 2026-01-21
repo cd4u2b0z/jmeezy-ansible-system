@@ -1,0 +1,63 @@
+/* Wallust-generated GTK colors for adw-gtk3 */
+/* These @define-color variables control the entire theme */
+
+@define-color accent_color #7FBBB3;
+@define-color accent_bg_color #7FBBB3;
+@define-color accent_fg_color #D3C6AA;
+
+@define-color window_bg_color #2D353B;
+@define-color window_fg_color #D3C6AA;
+
+@define-color view_bg_color #343F44;
+@define-color view_fg_color #D3C6AA;
+
+@define-color headerbar_bg_color #343F44;
+@define-color headerbar_fg_color #D3C6AA;
+@define-color headerbar_backdrop_color #2D353B;
+
+@define-color sidebar_bg_color #343F44;
+@define-color sidebar_fg_color #D3C6AA;
+@define-color sidebar_backdrop_color #2D353B;
+
+@define-color card_bg_color #343F44;
+@define-color card_fg_color #D3C6AA;
+
+@define-color popover_bg_color #2D353B;
+@define-color popover_fg_color #D3C6AA;
+
+@define-color dialog_bg_color #2D353B;
+@define-color dialog_fg_color #D3C6AA;
+
+@define-color shade_color rgba(0, 0, 0, 0.25);
+@define-color scrollbar_outline_color rgba(0, 0, 0, 0.5);
+
+/* Borders */
+@define-color borders #5C6A72;
+@define-color unfocused_borders #5C6A72;
+
+/* Selection */
+@define-color selected_bg_color #7FBBB3;
+@define-color selected_fg_color #D3C6AA;
+
+/* Links */
+@define-color link_color #7FBBB3;
+@define-color link_visited_color #D699B6;
+
+/* Warnings/Errors/Success */
+@define-color warning_color #DBBC7F;
+@define-color error_color #E67E80;
+@define-color success_color #A7C080;
+
+/* Destructive action */
+@define-color destructive_color #E67E80;
+@define-color destructive_bg_color #E67E80;
+@define-color destructive_fg_color #D3C6AA;
+
+/* Tooltip styling */
+tooltip,
+tooltip.background {
+  background-color: #2D353B;
+  color: #D3C6AA;
+  border: 1px solid #7FBBB3;
+  border-radius: 8px;
+}

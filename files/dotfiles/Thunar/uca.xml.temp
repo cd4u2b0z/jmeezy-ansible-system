@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+<action>
+	<icon>kitty</icon>
+	<name>Kitty</name>
+	<submenu></submenu>
+	<unique-id>1758613636199342-1</unique-id>
+	<command>/usr/bin/kitty --working-directory %f </command>
+	<description>Execs Kitty Terminal </description>
+	<range></range>
+	<patterns>*</patterns>
+	<startup-notify/>
+	<directories/>
+</action>
+<action>
+<icon>preferences-desktop-wallpaper</icon>
+<name>Set as Wallpaper</name>
+<unique-id>1701234567890123456</unique-id>
+<command>/home/craig/.local/bin/wallpaper-manager set %f fade</command>
+<description>Set this image as wallpaper using wallpaper-manager</description>
+<patterns>*.jpg;*.jpeg;*.png;*.webp;*.bmp;*.tiff;*.gif</patterns>
+<image-files/>
+</action>
+</actions>

@@ -1,0 +1,153 @@
+---
+# ═══════════════════════════════════════════════════════════════════════
+# DOTFILES ROLE - Chezmoi is the source of truth
+# ═══════════════════════════════════════════════════════════════════════
+# Strategy:
+#   1. Use chezmoi (primary) - pulls from GitHub repo
+#   2. Fallback to local copies ONLY if chezmoi unavailable
+#   3. Never both - that would cause conflicts
+# ═══════════════════════════════════════════════════════════════════════
+
+# ─────────────────────────────────────────────────────────────────────────
+# PRIMARY: Chezmoi (Source of Truth)
+# ─────────────────────────────────────────────────────────────────────────
+
+- name: Check if chezmoi is installed
+  command: which chezmoi
+  register: chezmoi_check
+  changed_when: false
+  failed_when: false
+
+- name: Install chezmoi if missing
+  become: true
+  community.general.pacman:
+    name: chezmoi
+    state: present
+  when: chezmoi_check.rc != 0
+
+- name: Re-check chezmoi after install
+  command: which chezmoi
+  register: chezmoi_recheck
+  changed_when: false
+  failed_when: false
+  when: chezmoi_check.rc != 0
+
+- name: Set chezmoi availability
+  set_fact:
+    chezmoi_available: "{{ chezmoi_check.rc == 0 or (chezmoi_recheck.rc | default(1)) == 0 }}"
+
+- name: Initialize chezmoi from GitHub
+  become: false
+  command: chezmoi init {{ chezmoi_repo }}
+  when: 
+    - chezmoi_available
+    - chezmoi_repo is defined
+  args:
+    creates: "{{ user_home }}/.local/share/chezmoi/.git"
+  tags:
+    - dotfiles
+    - chezmoi
+
+- name: Apply chezmoi dotfiles
+  become: false
+  command: chezmoi apply --force
+  when: chezmoi_available
+  changed_when: false
+  tags:
+    - dotfiles
+    - chezmoi
+
+- name: Chezmoi applied successfully
+  debug:
+    msg: "✅ Dotfiles applied via chezmoi (source of truth)"
+  when: chezmoi_available
+
+# ─────────────────────────────────────────────────────────────────────────
+# FALLBACK: Local symlinks (disaster recovery only)
+# ─────────────────────────────────────────────────────────────────────────
+
+- name: "[FALLBACK] Check if local dotfiles exist"
+  stat:
+    path: "{{ playbook_dir }}/files/dotfiles"
+  register: dotfiles_dir
+  when: not chezmoi_available
+
+- name: "[FALLBACK] Warning - using local copies"
+  debug:
+    msg: |
+      ⚠️  Chezmoi unavailable - using local fallback dotfiles
+      These may be outdated. Install chezmoi and run:
+        chezmoi init --apply {{ chezmoi_repo }}
+  when: 
+    - not chezmoi_available
+    - dotfiles_dir.stat.exists | default(false)
+
+- name: "[FALLBACK] Ensure .config directory exists"
+  file:
+    path: "{{ user_home }}/.config"
+    state: directory
+    mode: '0755'
+  when: 
+    - not chezmoi_available
+    - dotfiles_dir.stat.exists | default(false)
+
+- name: "[FALLBACK] Ensure .local/bin directory exists"
+  file:
+    path: "{{ user_home }}/.local/bin"
+    state: directory
+    mode: '0755'
+  when: 
+    - not chezmoi_available
+    - dotfiles_dir.stat.exists | default(false)
+
+- name: "[FALLBACK] Copy dotfiles (not symlink - avoids repo dependency)"
+  copy:
+    src: "{{ playbook_dir }}/files/dotfiles/{{ item.src }}"
+    dest: "{{ user_home }}/{{ item.dest }}"
+    mode: preserve
+  loop: "{{ dotfiles_map }}"
+  when: 
+    - not chezmoi_available
+    - dotfiles_dir.stat.exists | default(false)
+  failed_when: false
+  tags:
+    - dotfiles
+    - fallback
+
+# ─────────────────────────────────────────────────────────────────────────
+# POST: Enable user services (regardless of method)
+# ─────────────────────────────────────────────────────────────────────────
+
+- name: Reload user systemd daemon
+  become: false
+  systemd:
+    daemon_reload: true
+    scope: user
+  tags:
+    - dotfiles
+    - services
+
+- name: Enable user services
+  become: false
+  systemd:
+    name: "{{ item }}"
+    enabled: true
+    scope: user
+  loop: "{{ user_services }}"
+  failed_when: false
+  tags:
+    - dotfiles
+    - services
+
+- name: Enable user timers
+  become: false
+  systemd:
+    name: "{{ item }}"
+    enabled: true
+    state: started
+    scope: user
+  loop: "{{ user_timers }}"
+  failed_when: false
+  tags:
+    - dotfiles
+    - services

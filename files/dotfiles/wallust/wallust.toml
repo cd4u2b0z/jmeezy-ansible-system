@@ -1,0 +1,88 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║  🎨 WALLUST CONFIGURATION                                        ║
+# ║  System-wide theme management for craig@grim-reefer              ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+# Backend for color generation (when extracting from images)
+backend = "kmeans"
+
+# Color space for palette generation
+color_space = "labmixed"
+
+# Palette style
+palette = "dark"
+
+# Threshold for color similarity
+threshold = 20
+
+# Check for contrast and readability
+check_contrast = true
+
+# ═══════════════════════════════════════════════════════════════════
+# 📝 TEMPLATES
+# ═══════════════════════════════════════════════════════════════════
+
+[templates]
+# Kitty terminal colors
+kitty.template = "kitty-colors.conf"
+kitty.target = "~/.config/kitty/wallust-colors.conf"
+
+# Waybar CSS variables
+waybar.template = "waybar-colors.css"
+waybar.target = "~/.config/waybar/wallust-colors.css"
+
+# Cava visualizer colors
+cava.template = "cava-colors"
+cava.target = "~/.config/cava/wallust-colors"
+
+# Starship prompt
+starship.template = "starship.toml"
+starship.target = "~/.config/starship.toml"
+
+# Fuzzel launcher colors
+fuzzel.template = "fuzzel-colors.ini"
+fuzzel.target = "~/.config/fuzzel/wallust-colors.ini"
+
+
+# GTK3/GTK4 colors (Thunar, etc.) via adw-gtk3
+gtk.template = "gtk-colors.css"
+gtk.target = "~/.config/gtk-3.0/gtk.css"
+
+# Hyprland border colors
+hyprland.template = "hyprland-colors.conf"
+hyprland.target = "~/.config/hypr/wallust-colors.conf"
+
+# Tmux colors
+tmux.template = "tmux-colors.conf"
+tmux.target = "~/.config/tmux/wallust-colors.conf"
+
+# Neovim colors (lua module)
+nvim.template = "nvim-colors.lua"
+nvim.target = "~/.config/nvim/lua/wallust-colors.lua"
+
+# Mako notifications
+mako.template = "mako-colors.conf"
+mako.target = "~/.config/mako/config"
+
+# FZF fuzzy finder colors
+fzf.template = "fzf-colors.sh"
+fzf.target = "~/.cache/wallust/fzf-colors.sh"
+
+# ncspot Spotify client
+ncspot.template = "ncspot-colors.toml"
+ncspot.target = "~/.cache/wallust/ncspot-theme.toml"
+
+
+
+# ═══════════════════════════════════════════════════════════════════
+# 🔄 POST-RUN HOOKS
+# ═══════════════════════════════════════════════════════════════════
+[scripts]
+run_after = [
+    "~/.config/wallust/scripts/update-waybar-calendar.sh",
+    "~/.config/wallust/scripts/update-ncspot-theme.sh",
+]
+
+# Shell colors for scripts
+colors_sh.template = "colors.sh"
+colors_sh.target = "~/.cache/wallust/colors.sh"

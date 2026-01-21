@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+<action>
+	<icon>edit-delete</icon>
+	<name>Delete Permanently</name>
+	<unique-id>1697829012345</unique-id>
+	<command>zenity --question --text="Permanently delete selected files? This cannot be undone!" --title="Delete Permanently" && rm -rf %F</command>
+<description>Permanently delete selected files and folders with confirmation</description>
+<patterns>*</patterns>
+<startup-notify/>
+<directories/>
+<audio-files/>
+<image-files/>
+<other-files/>
+<text-files/>
+<video-files/>
+</action>
+</actions>

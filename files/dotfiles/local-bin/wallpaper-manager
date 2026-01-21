@@ -1,0 +1,466 @@
+#!/usr/bin/env bash
+
+# ╔═══════════════════════════════════════════════════════════════════╗
+# ║  🖼️ WALLPAPER MANAGER - NORD THEMED                               ║
+# ║  Seamless wallpaper management for craig@grim-reefer             ║
+# ╚═══════════════════════════════════════════════════════════════════╝
+
+set -euo pipefail
+
+# ═══════════════════════════════════════════════════════════════════
+# 🎨 NORD COLORS
+# ═══════════════════════════════════════════════════════════════════
+
+readonly NORD_BLUE='\033[38;2;129;161;193m'
+readonly NORD_GREEN='\033[38;2;163;190;140m'
+readonly NORD_YELLOW='\033[38;2;235;203;139m'
+readonly NORD_RED='\033[38;2;191;97;106m'
+readonly NORD_PURPLE='\033[38;2;180;142;173m'
+readonly NORD_CYAN='\033[38;2;136;192;208m'
+readonly NORD_RESET='\033[0m'
+
+# ═══════════════════════════════════════════════════════════════════
+# 📂 CONFIGURATION
+# ═══════════════════════════════════════════════════════════════════
+
+readonly WALLPAPER_DIR="$HOME/Pictures/Wallpapers"
+readonly CONFIG_DIR="$HOME/.config/wallpaper"
+readonly CURRENT_WALLPAPER_FILE="$CONFIG_DIR/current"
+readonly FAVORITES_FILE="$CONFIG_DIR/favorites"
+readonly LOG_FILE="$HOME/.local/log/wallpaper-manager.log"
+
+# Supported image formats
+readonly SUPPORTED_FORMATS="jpg jpeg png webp bmp tiff"
+
+# ═══════════════════════════════════════════════════════════════════
+# 📝 LOGGING FUNCTIONS
+# ═══════════════════════════════════════════════════════════════════
+
+log_info() {
+    echo -e "${NORD_BLUE}[INFO]${NORD_RESET} $*" | tee -a "$LOG_FILE"
+}
+
+log_success() {
+    echo -e "${NORD_GREEN}[SUCCESS]${NORD_RESET} $*" | tee -a "$LOG_FILE"
+}
+
+log_warning() {
+    echo -e "${NORD_YELLOW}[WARNING]${NORD_RESET} $*" | tee -a "$LOG_FILE"
+}
+
+log_error() {
+    echo -e "${NORD_RED}[ERROR]${NORD_RESET} $*" | tee -a "$LOG_FILE"
+}
+
+# ═══════════════════════════════════════════════════════════════════
+# 🔧 HELPER FUNCTIONS
+# ═══════════════════════════════════════════════════════════════════
+
+ensure_directories() {
+    mkdir -p "$WALLPAPER_DIR" "$CONFIG_DIR" "$(dirname "$LOG_FILE")"
+}
+
+detect_wallpaper_backend() {
+    if command -v swww &> /dev/null && pgrep -x swww-daemon &> /dev/null; then
+        echo "swww"
+    elif command -v hyprpaper &> /dev/null; then
+        echo "hyprpaper"
+    else
+        echo "none"
+    fi
+}
+
+start_swww_daemon() {
+    if ! pgrep -x swww-daemon &> /dev/null; then
+        log_info "Starting swww daemon..."
+        swww init &
+        sleep 2
+    fi
+}
+
+get_wallpapers() {
+    local format_pattern=""
+    for fmt in $SUPPORTED_FORMATS; do
+        format_pattern="${format_pattern}*.${fmt} *.${fmt^^} "
+    done
+    
+    find "$WALLPAPER_DIR" -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.webp" -o -name "*.bmp" -o -name "*.tiff" \) 2>/dev/null | sort
+}
+
+set_wallpaper_swww() {
+    local wallpaper_path="$(realpath "$1")"
+    local transition="${2:-fade}"
+    
+    start_swww_daemon
+    
+    case "$transition" in
+        "fade") swww img "$wallpaper_path" --transition-type fade --transition-duration 1.5 ;;
+        "slide") swww img "$wallpaper_path" --transition-type slide --transition-duration 2 ;;
+        "wipe") swww img "$wallpaper_path" --transition-type wipe --transition-duration 2 ;;
+        "grow") swww img "$wallpaper_path" --transition-type grow --transition-duration 2 ;;
+        "none") swww img "$wallpaper_path" --transition-type none ;;
+        *) swww img "$wallpaper_path" --transition-type fade --transition-duration 1.5 ;;
+    esac
+}
+
+set_wallpaper_hyprpaper() {
+    local wallpaper_path="$(realpath "$1")"
+    
+    # Get the primary monitor name
+    local monitor=$(hyprctl monitors -j | jq -r '.[0].name')
+    
+    # Use hyprpaper IPC to change wallpaper (hyprpaper 0.8.0+)
+    # This is much faster than restarting hyprpaper
+    hyprctl hyprpaper wallpaper "${monitor}, ${wallpaper_path}, cover" 2>/dev/null
+    
+    # Update config file for persistence
+    local hyprpaper_conf="$HOME/.config/hypr/hyprpaper.conf"
+    cat > "$hyprpaper_conf" << EOFINNER
+wallpaper {
+    monitor = ${monitor}
+    path = ${wallpaper_path}
+    fit_mode = cover
+}
+
+ipc = on
+splash = false
+EOFINNER
+}
+
+sync_hyprlock_wallpaper() {
+    local wallpaper_path="$(realpath "$1")"
+    local hyprlock_conf="$HOME/.config/hypr/hyprlock.conf"
+    
+    if [[ ! -f "$hyprlock_conf" ]]; then
+        log_warning "Hyprlock config not found at $hyprlock_conf"
+        return 1
+    fi
+    
+    # Update the background path in hyprlock.conf
+    sed -i "/^background {/,/^}/ s|^\([[:space:]]*path = \).*|\1${wallpaper_path}|" "$hyprlock_conf"
+    
+    log_info "Synced hyprlock wallpaper: $(basename "$wallpaper_path")"
+}
+
+set_wallpaper() {
+    local wallpaper_path="$(realpath "$1")"
+    local transition="${2:-fade}"
+    
+    if [[ ! -f "$wallpaper_path" ]]; then
+        log_error "Wallpaper file not found: $wallpaper_path"
+        return 1
+    fi
+    
+    local backend
+    backend=$(detect_wallpaper_backend)
+    
+    case "$backend" in
+        "swww")
+            log_info "Setting wallpaper with swww: $(basename "$wallpaper_path")"
+            set_wallpaper_swww "$wallpaper_path" "$transition"
+            ;;
+        "hyprpaper")
+            log_info "Setting wallpaper with hyprpaper: $(basename "$wallpaper_path")"
+            set_wallpaper_hyprpaper "$wallpaper_path"
+            ;;
+        "none")
+            log_error "No wallpaper backend available. Install swww or start hyprpaper."
+            return 1
+            ;;
+    esac
+    
+    # Save current wallpaper
+    echo "$wallpaper_path" > "$CURRENT_WALLPAPER_FILE"
+    
+    # Sync wallpaper to hyprlock for lock screen
+    sync_hyprlock_wallpaper "$wallpaper_path"
+    log_success "Wallpaper set successfully: $(basename "$wallpaper_path")"
+}
+
+# ═══════════════════════════════════════════════════════════════════
+# 🎲 WALLPAPER FUNCTIONS
+# ═══════════════════════════════════════════════════════════════════
+
+random_wallpaper() {
+    local wallpapers
+    mapfile -t wallpapers < <(get_wallpapers)
+    
+    if [[ ${#wallpapers[@]} -eq 0 ]]; then
+        log_error "No wallpapers found in $WALLPAPER_DIR"
+        return 1
+    fi
+    
+    local random_wallpaper="${wallpapers[RANDOM % ${#wallpapers[@]}]}"
+    set_wallpaper "$random_wallpaper" "${1:-fade}"
+}
+
+next_wallpaper() {
+    local wallpapers current_wallpaper current_index
+    mapfile -t wallpapers < <(get_wallpapers)
+    
+    if [[ ${#wallpapers[@]} -eq 0 ]]; then
+        log_error "No wallpapers found in $WALLPAPER_DIR"
+        return 1
+    fi
+    
+    if [[ -f "$CURRENT_WALLPAPER_FILE" ]]; then
+        current_wallpaper=$(cat "$CURRENT_WALLPAPER_FILE")
+        for i in "${!wallpapers[@]}"; do
+            if [[ "${wallpapers[i]}" == "$current_wallpaper" ]]; then
+                current_index=$i
+                break
+            fi
+        done
+    fi
+    
+    local next_index=$(( (current_index + 1) % ${#wallpapers[@]} ))
+    set_wallpaper "${wallpapers[next_index]}" "${1:-slide}"
+}
+
+previous_wallpaper() {
+    local wallpapers current_wallpaper current_index
+    mapfile -t wallpapers < <(get_wallpapers)
+    
+    if [[ ${#wallpapers[@]} -eq 0 ]]; then
+        log_error "No wallpapers found in $WALLPAPER_DIR"
+        return 1
+    fi
+    
+    if [[ -f "$CURRENT_WALLPAPER_FILE" ]]; then
+        current_wallpaper=$(cat "$CURRENT_WALLPAPER_FILE")
+        for i in "${!wallpapers[@]}"; do
+            if [[ "${wallpapers[i]}" == "$current_wallpaper" ]]; then
+                current_index=$i
+                break
+            fi
+        done
+    fi
+    
+    local prev_index=$(( (current_index - 1 + ${#wallpapers[@]}) % ${#wallpapers[@]} ))
+    set_wallpaper "${wallpapers[prev_index]}" "${1:-slide}"
+}
+
+list_wallpapers() {
+    local wallpapers
+    mapfile -t wallpapers < <(get_wallpapers)
+    
+    if [[ ${#wallpapers[@]} -eq 0 ]]; then
+        log_warning "No wallpapers found in $WALLPAPER_DIR"
+        return 0
+    fi
+    
+    echo -e "${NORD_PURPLE}╔═══════════════════════════════════════════════════════════════════╗${NORD_RESET}"
+    echo -e "${NORD_PURPLE}║${NORD_RESET}  🖼️  ${NORD_CYAN}AVAILABLE WALLPAPERS${NORD_RESET} (${#wallpapers[@]} found)                        ${NORD_PURPLE}║${NORD_RESET}"
+    echo -e "${NORD_PURPLE}╠═══════════════════════════════════════════════════════════════════╣${NORD_RESET}"
+    
+    for i in "${!wallpapers[@]}"; do
+        local wallpaper="${wallpapers[i]}"
+        local filename
+        filename=$(basename "$wallpaper")
+        local current_marker=""
+        
+        if [[ -f "$CURRENT_WALLPAPER_FILE" ]] && [[ "$(cat "$CURRENT_WALLPAPER_FILE")" == "$wallpaper" ]]; then
+            current_marker=" ${NORD_GREEN}(current)${NORD_RESET}"
+        fi
+        
+        printf "${NORD_PURPLE}║${NORD_RESET}  %3d. ${NORD_BLUE}%-50s${NORD_RESET}%s ${NORD_PURPLE}║${NORD_RESET}\n" $((i+1)) "$filename" "$current_marker"
+    done
+    
+    echo -e "${NORD_PURPLE}╚═══════════════════════════════════════════════════════════════════╝${NORD_RESET}"
+}
+
+add_favorite() {
+    local wallpaper_path="$(realpath "$1")"
+    
+    if [[ ! -f "$wallpaper_path" ]]; then
+        log_error "Wallpaper file not found: $wallpaper_path"
+        return 1
+    fi
+    
+    if grep -Fxq "$wallpaper_path" "$FAVORITES_FILE" 2>/dev/null; then
+        log_warning "Wallpaper already in favorites: $(basename "$wallpaper_path")"
+        return 0
+    fi
+    
+    echo "$wallpaper_path" >> "$FAVORITES_FILE"
+    log_success "Added to favorites: $(basename "$wallpaper_path")"
+}
+
+show_usage() {
+    cat << EOF
+${NORD_BLUE}🖼️ Wallpaper Manager - Nord Theme${NORD_RESET}
+
+${NORD_GREEN}USAGE:${NORD_RESET}
+  $(basename "$0") [COMMAND] [OPTIONS]
+
+${NORD_GREEN}COMMANDS:${NORD_RESET}
+  select [transition]        Interactive wallpaper selection menu (default)
+  set <file> [transition]    Set specific wallpaper with optional transition
+  random [transition]        Set random wallpaper from collection
+  next [transition]          Switch to next wallpaper
+  prev [transition]          Switch to previous wallpaper
+  list                       List all available wallpapers
+  current                    Show current wallpaper
+  fav [file]                 Add wallpaper to favorites (current if no file)
+  status                     Show wallpaper manager status
+
+${NORD_GREEN}TRANSITIONS (swww only):${NORD_RESET}
+  fade, slide, wipe, grow, none
+
+${NORD_GREEN}EXAMPLES:${NORD_RESET}
+  $(basename "$0") random fade                    # Random wallpaper with fade
+  $(basename "$0") set ~/Pictures/nature.jpg     # Set specific wallpaper
+  $(basename "$0") next slide                     # Next wallpaper with slide
+  $(basename "$0") list                           # Show all wallpapers
+
+${NORD_GREEN}DIRECTORIES:${NORD_RESET}
+  Wallpapers: ${NORD_CYAN}$WALLPAPER_DIR${NORD_RESET}
+  Config:     ${NORD_CYAN}$CONFIG_DIR${NORD_RESET}
+EOF
+}
+
+show_status() {
+    local backend current_wallpaper wallpaper_count
+    backend=$(detect_wallpaper_backend)
+    wallpaper_count=$(get_wallpapers | wc -l)
+    
+    if [[ -f "$CURRENT_WALLPAPER_FILE" ]]; then
+        current_wallpaper=$(basename "$(cat "$CURRENT_WALLPAPER_FILE")")
+    else
+        current_wallpaper="None"
+    fi
+    
+    echo -e "${NORD_PURPLE}╔═══════════════════════════════════════════════════════════════════╗${NORD_RESET}"
+    echo -e "${NORD_PURPLE}║${NORD_RESET}  🖼️  ${NORD_CYAN}WALLPAPER MANAGER STATUS${NORD_RESET}                               ${NORD_PURPLE}║${NORD_RESET}"
+    echo -e "${NORD_PURPLE}╠═══════════════════════════════════════════════════════════════════╣${NORD_RESET}"
+    printf "${NORD_PURPLE}║${NORD_RESET}  Backend:          ${NORD_GREEN}%-40s${NORD_RESET}     ${NORD_PURPLE}║${NORD_RESET}\n" "$backend"
+    printf "${NORD_PURPLE}║${NORD_RESET}  Current:          ${NORD_BLUE}%-40s${NORD_RESET}     ${NORD_PURPLE}║${NORD_RESET}\n" "$current_wallpaper"
+    printf "${NORD_PURPLE}║${NORD_RESET}  Available:        ${NORD_YELLOW}%-40s${NORD_RESET}     ${NORD_PURPLE}║${NORD_RESET}\n" "$wallpaper_count wallpapers"
+    printf "${NORD_PURPLE}║${NORD_RESET}  Directory:        ${NORD_CYAN}%-40s${NORD_RESET}     ${NORD_PURPLE}║${NORD_RESET}\n" "$WALLPAPER_DIR"
+    echo -e "${NORD_PURPLE}╚═══════════════════════════════════════════════════════════════════╝${NORD_RESET}"
+}
+
+# ═══════════════════════════════════════════════════════════════════
+# 🎨 INTERACTIVE WALLPAPER SELECTION
+# ═══════════════════════════════════════════════════════════════════
+
+interactive_select() {
+    local wallpapers transition
+    transition="${1:-fade}"
+    
+    wallpapers=($(get_wallpapers))
+    
+    if [[ ${#wallpapers[@]} -eq 0 ]]; then
+        log_error "No wallpapers found in $WALLPAPER_DIR"
+        return 1
+    fi
+    
+    echo -e "${NORD_PURPLE}╔═══════════════════════════════════════════════════════════════════╗${NORD_RESET}"
+    echo -e "${NORD_PURPLE}║${NORD_RESET}  🖼️  ${NORD_CYAN}WALLPAPER SELECTION${NORD_RESET} (${#wallpapers[@]} available)                     ${NORD_PURPLE}║${NORD_RESET}"
+    echo -e "${NORD_PURPLE}╠═══════════════════════════════════════════════════════════════════╣${NORD_RESET}"
+    
+    for i in "${!wallpapers[@]}"; do
+        local filename=$(basename "${wallpapers[$i]}")
+        local current_marker=""
+        
+        # Mark current wallpaper
+        if [[ -f "$CURRENT_WALLPAPER_FILE" ]] && [[ "$(cat "$CURRENT_WALLPAPER_FILE")" == "${wallpapers[$i]}" ]]; then
+            current_marker=" ${NORD_GREEN}★${NORD_RESET}"
+        fi
+        
+        printf "${NORD_PURPLE}║${NORD_RESET}  ${NORD_YELLOW}%2d.${NORD_RESET} %-50s${current_marker}     ${NORD_PURPLE}║${NORD_RESET}\n" "$((i+1))" "$filename"
+    done
+    
+    echo -e "${NORD_PURPLE}╚═══════════════════════════════════════════════════════════════════╝${NORD_RESET}"
+    echo
+    echo -e "${NORD_CYAN}Enter number (1-${#wallpapers[@]}), 'r' for random, or 'q' to quit:${NORD_RESET}"
+    
+    while true; do
+        read -p "> " choice
+        
+        case "$choice" in
+            "q"|"quit"|"exit")
+                echo -e "${NORD_BLUE}Goodbye!${NORD_RESET}"
+                return 0
+                ;;
+            "r"|"random")
+                random_wallpaper "$transition"
+                return 0
+                ;;
+            "")
+                continue
+                ;;
+            *)
+                if [[ "$choice" =~ ^[0-9]+$ ]] && [[ "$choice" -ge 1 ]] && [[ "$choice" -le "${#wallpapers[@]}" ]]; then
+                    local selected_wallpaper="${wallpapers[$((choice-1))]}"
+                    echo -e "${NORD_GREEN}Setting wallpaper: $(basename "$selected_wallpaper")${NORD_RESET}"
+                    set_wallpaper "$selected_wallpaper" "$transition"
+                    return 0
+                else
+                    echo -e "${NORD_RED}Invalid choice. Please enter 1-${#wallpapers[@]}, 'r' for random, or 'q' to quit.${NORD_RESET}"
+                fi
+                ;;
+        esac
+    done
+}
+
+# ═══════════════════════════════════════════════════════════════════
+# 🚀 MAIN EXECUTION
+# ═══════════════════════════════════════════════════════════════════
+
+main() {
+    ensure_directories
+    
+    case "${1:-select}" in
+        "select"|"choose"|"menu")
+            interactive_select "${2:-fade}"
+            ;;
+        "set")
+            if [[ -z "${2:-}" ]]; then
+                log_error "Please specify a wallpaper file"
+                exit 1
+            fi
+            set_wallpaper "$2" "${3:-fade}"
+            ;;
+        "random"|"rand")
+            random_wallpaper "${2:-fade}"
+            ;;
+        "next")
+            next_wallpaper "${2:-slide}"
+            ;;
+        "prev"|"previous")
+            previous_wallpaper "${2:-slide}"
+            ;;
+        "list")
+            list_wallpapers
+            ;;
+        "current")
+            if [[ -f "$CURRENT_WALLPAPER_FILE" ]]; then
+                echo "Current wallpaper: $(cat "$CURRENT_WALLPAPER_FILE")"
+            else
+                echo "No wallpaper set"
+            fi
+            ;;
+        "fav"|"favorite")
+            local target_file="${2:-}"
+            if [[ -z "$target_file" ]] && [[ -f "$CURRENT_WALLPAPER_FILE" ]]; then
+                target_file=$(cat "$CURRENT_WALLPAPER_FILE")
+            fi
+            add_favorite "$target_file"
+            ;;
+        "status")
+            show_status
+            ;;
+        "help"|"--help"|"-h")
+            show_usage
+            ;;
+        *)
+            log_error "Unknown command: $1"
+            echo
+            show_usage
+            exit 1
+            ;;
+    esac
+}
+
+main "$@"

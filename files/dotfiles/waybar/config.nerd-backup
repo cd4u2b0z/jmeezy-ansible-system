@@ -1,0 +1,99 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 48,
+  "exclusive": true,
+  "passthrough": false,
+  "gtk-layer-shell": true,
+  "margin": "0",
+  "modules-left": [
+    "hyprland/workspaces"
+  ],
+  "modules-center": [
+    "custom/weather",
+    "clock"
+  ],
+  "modules-right": [
+    "cpu",
+    "memory",
+    "pulseaudio",
+    "network",
+    "tray"
+  ],
+
+  "hyprland/workspaces": {
+    "disable-scroll": true,
+    "format": "{icon}",
+    "format-icons": {
+      "active": "●",
+      "default": "○"
+    }
+  },
+
+  "custom/weather": {
+    "exec": "curl -s 'wttr.in/?format=%c+%t+%C' 2>/dev/null || echo '🌤 Weather unavailable'",
+    "interval": 300,
+    "format": "{}",
+    "tooltip": false,
+    "on-click": "xdg-open 'https://wttr.in'"
+  },
+
+  "clock": {
+    "interval": 1,
+    "format": "{:%H:%M:%S}",
+    "format-alt": "{:%Y-%m-%d %H:%M:%S}",
+    "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+  },
+
+  "cpu": {
+    "interval": 2,
+    "format": "📊 {usage}%",
+    "max-length": 10,
+    "tooltip": true,
+    "tooltip-format": "CPU: {usage}%\nRAM: {memory}%\nClick for btop",
+    "on-click": "kitty -e btop"
+  },
+
+  "memory": {
+    "interval": 2,
+    "format": "",
+    "tooltip": false
+  },
+
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "format-bluetooth": "{icon} {volume}%",
+    "format-muted": "🔇 Muted",
+    "format-icons": {
+      "headphone": "🎧",
+      "hands-free": "🎧",
+      "headset": "🎧",
+      "phone": "📱",
+      "portable": "📱",
+      "car": "🚗",
+      "default": ["🔈", "🔉", "🔊"]
+    },
+    "scroll-step": 5,
+    "on-click": "pavucontrol",
+    "on-click-right": "pactl set-sink-mute @DEFAULT_SINK@ toggle"
+  },
+
+  "network": {
+    "interface": "*",
+    "format": "📶 {essid}",
+    "format-wifi": "📶 {essid} ({signalStrength}%)",
+    "format-ethernet": "🌐 Connected",
+    "format-disconnected": "❌ Disconnected",
+    "tooltip": true,
+    "tooltip-format": "{ifname}: {ipaddr}\nSpeed: {bandwidthDownBits} down / {bandwidthUpBits} up",
+    "tooltip-format-wifi": "Network: {essid}\nSignal: {signalStrength}%\nIP: {ipaddr}\nSpeed: {bandwidthDownBits} ↓ / {bandwidthUpBits} ↑",
+    "on-click": "kitty -e nmtui",
+    "on-click-right": "nm-connection-editor"
+  },
+
+
+  "tray": {
+    "icon-size": 21,
+    "spacing": 10
+  }
+}

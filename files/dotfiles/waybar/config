@@ -1,0 +1,168 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 48,
+  "exclusive": true,
+  "passthrough": false,
+  "gtk-layer-shell": true,
+  "margin": "6 8 0 8",
+  "modules-left": [
+    "hyprland/workspaces",
+    "custom/app-tray",
+    "custom/music"
+  ],
+  "modules-center": [
+    "custom/weather",
+    "clock"
+  ],
+  "modules-right": [
+    "custom/system-stats",
+    "custom/updates",
+    "bluetooth",
+    "network",
+    "pulseaudio"
+  ],
+  "hyprland/workspaces": {
+    "disable-scroll": true,
+    "format": "{icon}",
+    "format-icons": {
+      "active": "\u25cf",
+      "default": "\u25cb"
+    },
+    "on-scroll-up": "hyprctl dispatch workspace e+1",
+    "on-scroll-down": "hyprctl dispatch workspace e-1"
+  },
+  "custom/weather": {
+    "exec": "~/.config/waybar/scripts/bulletproof-weather.sh",
+    "interval": 300,
+    "format": "\udb81\udd90   {}",
+    "tooltip": false,
+    "on-click": "xdg-open 'https://openweathermap.org/city/4597040'",
+    "on-click-right": "kitty -e bash -c 'cd ~/asciimatics-weather-toys && source .venv/bin/activate && python weather_dashboard.py'"
+  },
+  "clock": {
+    "interval": 1,
+    "format": "{:%H:%M}",
+    "format-alt": "{:%A, %B %d %Y   %H:%M}",
+    "tooltip-format": "{calendar}",
+    "calendar": {
+      "mode": "month",
+      "mode-mon-col": 3,
+      "weeks-pos": "left",
+      "on-scroll": 1,
+      "format": {
+        "months": "<span color='#EBDBB2' size='large' weight='bold'>{}</span>",
+        "days": "<span color='#EBDBB2'>{:>2}</span>",
+        "weeks": "<span color='#928374'>W{} </span>",
+        "weekdays": "<span color='#458588' weight='bold'>{:>2}</span>",
+        "today": "<span background='#98971A' color='#282828' weight='bold'> {:>2} </span>"
+      }
+    },
+    "actions": {
+      "on-click-right": "mode",
+      "on-scroll-up": "shift_up",
+      "on-scroll-down": "shift_down"
+    }
+  },
+  "custom/system-stats": {
+    "format": "{}",
+    "interval": 3,
+    "return-type": "json",
+    "exec": "~/.config/waybar/scripts/microchip-wrapper.sh",
+    "tooltip": true,
+    "on-click": "kitty btop",
+    "on-right-click": "kitty nvtop"
+  },
+  "bluetooth": {
+    "format": "\udb80\udcaf",
+    "format-disabled": "\udb80\udcb2",
+    "format-off": "\udb80\udcb2",
+    "format-on": "\udb80\udcaf",
+    "format-connected": "\udb80\udcb1 {num_connections}",
+    "format-connected-battery": "\udb80\udcb1 {device_alias} {device_battery_percentage}%",
+    "tooltip": true,
+    "tooltip-format": "Bluetooth: {status}",
+    "tooltip-format-connected": "Connected: {device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}",
+    "on-click": "blueman-manager"
+  },
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "format-bluetooth": "{icon} {volume}%",
+    "format-muted": "\udb83\ude08 Muted",
+    "format-icons": {
+      "headphone": "\udb80\udecb",
+      "hands-free": "\udb80\udece",
+      "headset": "\udb80\udece",
+      "phone": "\udb80\udff2",
+      "portable": "\udb80\udecb",
+      "car": "\udb80\udd0b",
+      "default": [
+        "\udb81\udd7f",
+        "\udb81\udd80",
+        "\udb81\udd7e"
+      ]
+    },
+    "scroll-step": 5,
+    "on-click": "env ADW_DEBUG_COLOR_SCHEME=prefer-dark GTK_THEME=Adwaita:dark pavucontrol",
+    "on-click-right": "pactl set-sink-mute @DEFAULT_SINK@ toggle"
+  },
+  "network": {
+    "format": "{icon}",
+    "format-wifi": "{icon}",
+    "format-ethernet": "{icon}",
+    "format-linked": "{icon}",
+    "format-disconnected": "{icon}",
+    "format-disabled": "{icon}",
+    "tooltip": true,
+    "tooltip-format": "{ifname}: {ipaddr}\nSpeed: {bandwidthDownBits} down / {bandwidthUpBits} up",
+    "tooltip-format-wifi": "WiFi: {essid}\nSignal: {signalStrength}%\nIP: {ipaddr}\nSpeed: {bandwidthDownBits} \u2193 / {bandwidthUpBits} \u2191",
+    "tooltip-format-ethernet": "Ethernet: {ifname}\nIP: {ipaddr}\nSpeed: {bandwidthDownBits} \u2193 / {bandwidthUpBits} \u2191",
+    "tooltip-format-disconnected": "No network connection",
+    "format-icons": {
+      "wifi": [
+        "\udb82\udd2f",
+        "\udb82\udd1f",
+        "\udb82\udd22",
+        "\udb82\udd25",
+        "\udb82\udd28"
+      ],
+      "ethernet": "\udb80\ude00",
+      "disconnected": "\udb82\udd2d"
+    },
+    "on-click": "kitty -e nmtui",
+    "on-click-right": "nm-connection-editor"
+  },
+  "custom/app-tray": {
+    "exec": "~/.config/waybar/scripts/multi-app-tray.sh",
+    "interval": 1,
+    "format": "{}",
+    "return-type": "json",
+    "on-click": "~/.config/waybar/scripts/app-manager.sh",
+    "on-click-right": "fuzzel",
+    "tooltip": true,
+    "signal": 8
+  },
+  "custom/updates": {
+    "exec": "~/.config/waybar/scripts/updates-wrapper.sh",
+    "return-type": "json",
+    "interval": 120,
+    "format": "{}",
+    "tooltip": true,
+    "on-click": "kitty -e ~/.config/waybar/scripts/update-manager.sh",
+    "on-click-right": "kitty -e ~/.config/waybar/scripts/update-manager.sh",
+    "signal": 8
+  },
+  "custom/music": {
+    "exec": "~/.config/waybar/scripts/music-player.sh",
+    "return-type": "json",
+    "interval": 1,
+    "format": "{}",
+    "tooltip": true,
+    "on-click": "playerctl play-pause",
+    "on-click-right": "playerctl next",
+    "on-click-middle": "playerctl previous",
+    "on-scroll-up": "playerctl volume 0.05+",
+    "on-scroll-down": "playerctl volume 0.05-"
+  }
+}

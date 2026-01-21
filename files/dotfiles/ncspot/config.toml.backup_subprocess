@@ -1,0 +1,59 @@
+# 🎵 Nord Theme ncspot Configuration
+# Generated: October 4, 2025
+
+[audio]
+backend = "subprocess"
+backend_command = "ffplay -nodisp -autoexit -f s16le -ar 44100 -ac 2 -" 
+bitrate = 320
+
+[theme]
+# Nord color scheme for ncspot
+background = "#2e3440"
+primary = "#e5e9f0"
+secondary = "#81a1c1"
+title = "#88c0d0"
+playing = "#a3be8c"
+playing_selected = "#8fbcbb"
+playing_bg = "#3b4252"
+highlight = "#5e81ac"
+highlight_bg = "#434c5e"
+error = "#bf616a"
+error_bg = "#2e3440"
+statusbar = "#3b4252"
+statusbar_progress = "#88c0d0"
+statusbar_bg = "#2e3440"
+cmdline = "#e5e9f0"
+cmdline_bg = "#2e3440"
+search_match = "#ebcb8b"
+
+[keybindings]
+# Vi-style keybindings
+"q" = "quit"
+"Ctrl+c" = "quit"
+" " = "playpause"
+">" = "next"
+"<" = "previous"
+"s" = "shuffle"
+"r" = "repeat"
+"o" = "open"
+"/" = "search"
+"n" = "search_next"
+"N" = "search_previous"
+"+" = "volup"
+"-" = "voldown"
+"=" = "volup"
+"j" = "down"
+"k" = "up"
+"h" = "left"
+"l" = "right"
+"g" = "top"
+"G" = "bottom"
+"?" = "help"
+
+[behavior]
+# Stable behavior settings
+use_nerdfont = true
+flip_status_indicators = false
+backend_reload_interval = 5
+audio_cache = true
+audio_cache_size = 1000

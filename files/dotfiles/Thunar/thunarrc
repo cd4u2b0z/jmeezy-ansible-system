@@ -1,0 +1,17 @@
+[Configuration]
+DefaultView=ThunarIconView
+LastDetailsViewColumnWidths=50,133,50,50,178,50,50,68
+LastDetailsViewZoomLevel=THUNAR_ZOOM_LEVEL_38
+LastIconViewZoomLevel=THUNAR_ZOOM_LEVEL_100
+LastSeparatorPosition=170
+LastShowHidden=FALSE
+LastView=ThunarIconView
+LastWindowHeight=480
+LastWindowWidth=640
+LastWindowMaximized=FALSE
+MiscSingleClick=FALSE
+MiscSymbolicIconsInSidePane=FALSE
+ShortcutsIconSize=THUNAR_ICON_SIZE_SMALL
+MiscThumbnailMode=THUNAR_THUMBNAIL_MODE_ONLY_LOCAL
+MiscFoldersFirst=TRUE
+MiscFileExtensions=TRUE

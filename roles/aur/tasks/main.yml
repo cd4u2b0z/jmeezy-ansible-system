@@ -1,0 +1,60 @@
+---
+# Install AUR packages using paru/yay
+
+- name: Check if AUR helper is installed
+  command: which {{ aur_helper }}
+  register: aur_helper_check
+  changed_when: false
+  failed_when: false
+
+- name: Install paru if not present
+  when: aur_helper_check.rc != 0
+  block:
+    - name: Clone paru
+      git:
+        repo: https://aur.archlinux.org/paru.git
+        dest: /tmp/paru
+        depth: 1
+
+    - name: Build and install paru
+      command: makepkg -si --noconfirm
+      args:
+        chdir: /tmp/paru
+
+- name: Read AUR package list
+  set_fact:
+    aur_packages: "{{ lookup('file', role_path + '/tasks/aur-packages.txt').split('\n') | select | list }}"
+
+- name: Install AUR packages
+  become: false
+  command: "{{ aur_helper }} -S --noconfirm --needed {{ item }}"
+  loop: "{{ aur_packages }}"
+  register: aur_results
+  changed_when: "'installing' in aur_results.stdout or 'upgrading' in aur_results.stdout"
+  failed_when: false  # Continue on failure, but report below
+  tags:
+    - aur
+
+- name: Report failed AUR packages
+  debug:
+    msg: "⚠️  Failed to install: {{ item.item }} (rc={{ item.rc }})"
+  loop: "{{ aur_results.results }}"
+  when: 
+    - aur_results.results is defined
+    - item.rc != 0
+  loop_control:
+    label: "{{ item.item }}"
+  tags:
+    - aur
+
+- name: Summary of AUR installation
+  debug:
+    msg: |
+      ══════════════════════════════════════════════════════════════
+      AUR Installation Summary:
+        Total packages: {{ aur_packages | length }}
+        Failed: {{ aur_results.results | selectattr('rc', 'ne', 0) | list | length }}
+      ══════════════════════════════════════════════════════════════
+  when: aur_results.results is defined
+  tags:
+    - aur

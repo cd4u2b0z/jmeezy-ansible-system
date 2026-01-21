@@ -1,0 +1,65 @@
+mpd_host = localhost
+mpd_port = 6600
+mpd_connection_timeout = 5
+
+music_directory = ~/Music
+ncmpcpp_directory = ~/.config/ncmpcpp
+lyrics_directory = ~/.config/ncmpcpp/lyrics
+
+# Visualizer settings (optional, cava standalone recommended)
+visualizer_data_source = /tmp/mpd.fifo
+visualizer_output_name = "Visualizer FIFO"
+visualizer_type = spectrum
+visualizer_in_stereo = yes
+visualizer_fps = 60
+visualizer_autoscale = no
+visualizer_look = ●▮
+visualizer_color = blue, cyan, green, yellow, magenta, red
+
+# Album art
+enable_album_art = yes
+album_art_method = "chafa"
+album_art_preferred_filename = "cover.jpg"
+
+# Appearance & Gruvbox Colors
+colors_enabled = yes
+main_window_color = yellow
+header_window_color = green
+volume_color = cyan
+state_line_color = white
+state_flags_color = red:b
+progressbar_color = black:b
+progressbar_elapsed_color = green:b
+statusbar_color = white
+alternative_ui_separator_color = black:b
+window_border_color = green
+active_window_border = red
+
+# Interface settings
+user_interface = classic
+playlist_display_mode = columns
+browser_display_mode = classic
+search_engine_display_mode = classic
+header_visibility = yes
+statusbar_visibility = yes
+titles_visibility = yes
+mouse_support = yes
+cyclic_scrolling = no
+centered_cursor = no
+autocenter_mode = no
+
+# Song format
+song_list_format = {%a - }{%t}|{$8%f$9}$R{$3%l$9}
+song_status_format = {{%a{ "%b"{ (%y)}} - }{%t}}|{%f}
+current_item_prefix = $(yellow)$r
+current_item_suffix = $/r$(end)
+
+# Columns
+song_columns_list_format = (20)[]{a} (6f)[green]{NE} (50)[white]{t|f:Title} (20)[cyan]{b} (7f)[magenta]{l}
+
+# Behavior
+startup_screen = playlist
+startup_slave_screen = visualizer
+follow_now_playing_lyrics = yes
+store_lyrics_in_song_dir = no
+generate_win32_compatible_filenames = yes
